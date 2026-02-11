@@ -1,0 +1,53 @@
+import threading
+import time
+import random
+
+# Sincronización: La única plancha del local
+plancha = threading.Lock()
+
+def preparar_pedido(id_pedido, nombre_plato):
+    # Generamos un tiempo de cocción aleatorio entre 1 y 4 segundos
+    tiempo_coccion = random.randint(1, 4)
+    
+    print(f"Pedido #{id_pedido} ({nombre_plato}) recibido. Tiempo estimado: {tiempo_coccion}m")
+    
+    # El cocinero intenta entrar a la plancha
+    with plancha:
+        inicio = time.perf_counter()
+        print(f"--- [PLANCHA] Cocinando pedido #{id_pedido}: {nombre_plato} ---")
+        
+        # Simulación del tiempo aleatorio
+        time.sleep(tiempo_coccion)
+        
+        fin = time.perf_counter()
+        print(f"--- [PLANCHA] Pedido #{id_pedido} terminado en {fin - inicio:.2f}m ---")
+
+    print(f"Pedido #{id_pedido} ({nombre_plato}) listo para entrega.")
+
+if __name__ == "__main__":
+    menu = ["Hamburguesa", "Perrito", "Sandwich", "Pizza", "Nuggets", "Tacos"]
+    
+    # Mezclamos el menú para que el orden de entrada sea aleatorio
+    random.shuffle(menu)
+    
+    hilos = []
+    inicio_jornada = time.perf_counter()
+
+    print("--- ABRIENDO RESTAURANTE ---\n")
+
+    # Creamos un hilo para cada plato del menú mezclado
+    for i, plato in enumerate(menu, 1):
+        hilo = threading.Thread(target=preparar_pedido, args=(i, plato))
+        hilos.append(hilo)
+        hilo.start()
+
+    # Esperamos a que todos los cocineros terminen
+    for hilo in hilos:
+        hilo.join()
+
+    fin_jornada = time.perf_counter()
+    
+    print("\n" + "="*45)
+    print(f"JORNADA FINALIZADA")
+    print(f"Tiempo total de trabajo: {fin_jornada - inicio_jornada:.2f} minutos")
+    print("="*45)
