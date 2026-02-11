@@ -6,7 +6,7 @@ plancha = threading.Lock()
 
 def preparar_pedido(nombre_pedido, tiempo_necesario):
     # Inicio del hilo
-    print(f"Pedido recibido: {nombre_pedido} (Requiere {tiempo_necesario}s)")
+    print(f"Pedido recibido: {nombre_pedido} (Requiere {tiempo_necesario}m)")
     
     # El cocinero espera su turno para la plancha
     with plancha:
@@ -17,15 +17,15 @@ def preparar_pedido(nombre_pedido, tiempo_necesario):
         time.sleep(tiempo_necesario)
         
         fin_coccion = time.perf_counter()
-        print(f"--- Terminado en plancha: {nombre_pedido} (Tardo: {fin_coccion - inicio_coccion:.2f}s) ---")
+        print(f"--- Terminado en plancha: {nombre_pedido} (Tardo: {fin_coccion - inicio_coccion:.2f}m) ---")
 
     print(f"Pedido completado y listo para servir: {nombre_pedido}")
 
 if __name__ == "__main__":
     # Definimos pedidos con diferentes tiempos de cocción
     pedidos = [
-        ("Hamburguesa", 3),
-        ("Perrito", 1),
+        ("Hamburguesa", 5),
+        ("Perrito", 3),
         ("Sandwich", 2)
     ]
     
@@ -46,5 +46,5 @@ if __name__ == "__main__":
     
     print("\n" + "="*40)
     print(f"TODOS LOS PEDIDOS COMPLETADOS")
-    print(f"Tiempo total de la cocina: {fin_total - inicio_total:.2f} segundos")
+    print(f"Tiempo total de la cocina: {fin_total - inicio_total:.2f} minutos")
     print("="*40)
