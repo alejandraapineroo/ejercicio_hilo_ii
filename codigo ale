@@ -1,0 +1,42 @@
+import threading
+import time
+
+# 2. Sincronizar con Lock()
+# Creamos el objeto lock que representa la única plancha del restaurante
+plancha = threading.Lock()
+
+def preparar_pedido(nombre_pedido):
+    # 3. Imprimir cuando comience
+    print(f"Cocinero preparando: {nombre_pedido}")
+    
+    # Solo un hilo puede entrar en este bloque a la vez
+    with plancha:
+        print(f"[PLANCHA] Cocinando {nombre_pedido}...")
+        # Simulamos el tiempo de cocción (puedes cambiarlo a 2 o 3 segundos)
+        time.sleep(2) 
+        print(f"[PLANCHA] {nombre_pedido} ha terminado de cocinarse.")
+
+    # 3. Imprimir cuando termine
+    print(f"Pedido finalizado: {nombre_pedido}")
+
+if __name__ == "__main__":
+    # Definimos la lista de pedidos
+    lista_pedidos = ["Hamburguesa", "Perrito Caliente", "Sandwich Mixto", "Pizza Individual"]
+    
+    # Lista para guardar las referencias de los hilos
+    hilos_cocineros = []
+
+    # 1. Crear un hilo por cada pedido
+    for pedido in lista_pedidos:
+        # threading.Thread() crea el hilo independiente
+        hilo = threading.Thread(target=preparar_pedido, args=(pedido,))
+        hilos_cocineros.append(hilo)
+        # Iniciamos el hilo
+        hilo.start()
+
+    # Esperamos a que todos los hilos terminen antes de seguir
+    for hilo in hilos_cocineros:
+        hilo.join()
+
+    # Al final, se muestran todos los pedidos completados
+    print("\n--- INFORME: Todos los pedidos han sido entregados con éxito ---")
